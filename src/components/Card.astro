@@ -1,63 +1,35 @@
 ---
 export interface Props {
-	title: string;
-	body: string;
-	href: string;
+  title: string;
+  image: string;
+  price: number;
+  body: string;
+  href: string;
 }
 
-const { href, title, body } = Astro.props;
+const { href, image, title, body, price } = Astro.props;
 ---
 
-<li class="link-card">
-	<a href={href}>
-		<h2>
-			{title}
-			<span>&rarr;</span>
-		</h2>
-		<p>
-			{body}
-		</p>
-	</a>
-</li>
-<style>
-	.link-card {
-		list-style: none;
-		display: flex;
-		padding: 0.25rem;
-		background-color: white;
-		background-image: none;
-		background-size: 400%;
-		border-radius: 0.6rem;
-		background-position: 100%;
-		transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-	}
-
-	.link-card > a {
-		width: 100%;
-		text-decoration: none;
-		line-height: 1.4;
-		padding: 1rem 1.3rem;
-		border-radius: 0.35rem;
-		color: #111;
-		background-color: white;
-		opacity: 0.8;
-	}
-	h2 {
-		margin: 0;
-		font-size: 1.25rem;
-		transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-	}
-	p {
-		margin-top: 0.5rem;
-		margin-bottom: 0;
-		color: #444;
-	}
-	.link-card:is(:hover, :focus-within) {
-		background-position: 0;
-		background-image: var(--accent-gradient);
-	}
-	.link-card:is(:hover, :focus-within) h2 {
-		color: rgb(var(--accent));
-	}
-</style>
+<div class="group relative">
+  <div
+    class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80"
+  >
+    <img
+      src={image}
+      alt="Front of men's Basic Tee in black."
+      class="h-full w-full object-cover object-center lg:h-full lg:w-full"
+    />
+  </div>
+  <div class="mt-4 flex justify-between">
+    <div>
+      <h3 class="text-sm text-gray-700">
+        <a href={href}>
+          <span aria-hidden="true" class="absolute inset-0"></span>
+          {title}
+        </a>
+      </h3>
+      <p class="mt-1 text-sm text-gray-500">{body}</p>
+    </div>
+    <p class="text-sm font-medium text-gray-900">{price}</p>
+  </div>
+</div>

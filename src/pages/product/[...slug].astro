@@ -1,0 +1,61 @@
+---
+import type { Product } from '../../consts';
+import { getProducts } from '../../firebase/server';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const products = await getProducts();
+
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+type Props = { product: Product };
+
+const { product } = Astro.props;
+---
+
+<Layout title={product.title}>
+  <main>
+    <div class="grid grid-cols-12 gap-8">
+      <div class="col-span-8">
+        <div>
+          <img src={product.image} alt={product.title} />
+        </div>
+      </div>
+
+      <div class="col-span-4 flex flex-col gap-8">
+        <h1 class="text-4xl font-bold">{product.title}</h1>
+        <div set:html={product.description} />
+        <div class="text-xl font-semibold">${product.price}</div>
+        <button
+          id="buy-button"
+          type="submit"
+          class="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >Buy</button
+        >
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script define:vars={{ product }}>
+  const buyButton = document.querySelector('#buy-button');
+
+  buyButton &&
+    buyButton.addEventListener('click', async () => {
+      const response = await fetch('/api/stripe/createCheckoutSession', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    });
+</script>
